@@ -1,0 +1,15 @@
+                {% load static %}
+                <div class="blog-posts">
+                    {% for post in latest_posts %}
+                    <a href="{{ post.get_absolute_url }}">
+                        <div class="item d-flex align-items-center">
+                            <div class="image"><img src="{% static 'img/small-thumbnail-1.jpg' %}" alt="..." class="img-fluid"></div>
+                            <div class="title"><strong>{{ post.title }}</strong>
+                                <div class="d-flex align-items-center">
+                                    <div class="views"><i class="icon-eye"></i> 500</div>
+                                    <div class="comments"><i class="icon-comment"></i>{{ post.comments.count }}</div>
+                                </div>
+                            </div>
+                        </div>
+                        {% endfor %}
+                    </a></div>

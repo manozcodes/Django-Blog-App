@@ -1,4 +1,5 @@
 {% extends 'myblog/header.html' %}
+{% load blog_tags %}
 {% load static %}
 {% block main %}
 <div class="container">
@@ -20,13 +21,21 @@
                             <div class="d-flex align-items-center flex-wrap">
                                 <div class="date"><i class="icon-clock"></i> 2 months ago</div>
                                 <div class="views"><i class="icon-eye"></i> 500</div>
-                                <div class="comments meta-last"><i class="icon-comment"></i>12</div>
+                                <div class="comments meta-last"><i class="icon-comment"></i>{{ post.comments.count }}</div>
                             </div>
                         </div>
                         <div class="post-body">
-                            <p style="text-align: justify;">{{ post.body }}</p>
+                            <p style="text-align: justify;">{{ post.body | markdown}}</p>
                         </div>
-                        <div class="post-tags"><a href="#" class="tag">#Business</a><a href="#" class="tag">#Tricks</a><a href="#" class="tag">#Financial</a><a href="#" class="tag">#Economy</a></div>
+                        <!-- <div class="post-tags"><a href="#" class="tag">#Business</a><a href="#" class="tag">#Tricks</a><a href="#" class="tag">#Financial</a><a href="#" class="tag">#Economy</a></div> -->
+                        <div class="post-tags">Tags:<a href="#" class="tag">{{ post.tags.all | join:", " }}</a></div>
+                        <div class="mt-3">
+                            <p style="text-align: center;border: 1px solid #c9c5c5;">
+                                <a href="{% url 'myblog:post_share' post.id %}">
+                                    SHARE THIS POST
+                                </a>
+                            </p>
+                        </div>
                         <div class="posts-nav d-flex justify-content-between align-items-stretch flex-column flex-md-row"><a href="#" class="prev-post text-left d-flex align-items-center">
                                 <div class="icon prev"><i class="fa fa-angle-left"></i></div>
                                 <div class="text"><strong class="text-primary">Previous Post </strong>
@@ -40,9 +49,11 @@
                             </a></div>
                         <div class="post-comments">
                             <header>
-                                <h3 class="h6">Post Comments<span class="no-of-comments">(3)</span></h3>
+                                {% with comments.count as total_comments %}
+                                <h3 class="h6">Post Comment{{ total_comments | pluralize }}<span class="no-of-comments">({{ total_comments }})</span></h3>
+                                {% endwith %}
                             </header>
-                            <div class="comment">
+                            <!--                             <div class="comment">
                                 <div class="comment-header d-flex justify-content-between">
                                     <div class="user d-flex align-items-center">
                                         <div class="image"><img src="{% static 'img/user.svg' %}" alt="..." class="img-fluid rounded-circle"></div>
@@ -74,14 +85,31 @@
                                 <div class="comment-body">
                                     <p>Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam.</p>
                                 </div>
+                            </div> -->
+                            {% for comment in comments %}
+                            <div class="comment">
+                                <div class="comment-header d-flex justify-content-between">
+                                    <div class="user d-flex align-items-center">
+                                        <div class="title"><span class="date">Comment {{ forloop.counter }} by {{comment.name }} {{ comment.created }}</span></div>
+                                    </div>
+                                </div>
+                                <div class="comment-body">
+                                    <p>{{ comment.body | linebreaks }}</p>
+                                </div>
                             </div>
+                            {% empty %}
+                            <p> There are no comments yet. You may post your comment!</p>
+                            {% endfor %}
                         </div>
                         <div class="add-comment">
                             <header>
-                                <h3 class="h6">Leave a reply</h3>
+                                <h3 class="h6">Leave a Comment</h3>
                             </header>
-                            <form action="#" class="commenting-form">
-                                <div class="row">
+                            {% if new_comment %}
+                            <strong>Your Comment Has Been Added.</strong>
+                            {% else %}
+                            <form action="." class="commenting-form" method="POST">
+                                <!--                                 <div class="row">
                                     <div class="form-group col-md-6">
                                         <input type="text" name="username" id="username" placeholder="Name" class="form-control">
                                     </div>
@@ -94,8 +122,14 @@
                                     <div class="form-group col-md-12">
                                         <button type="submit" class="btn btn-secondary">Submit Comment</button>
                                     </div>
+                                </div> -->
+                                {{ comment_form.as_p }}
+                                {% csrf_token %}
+                                <div class="form-group col-md-12">
+                                    <button type="submit" class="btn btn-secondary">Submit Comment</button>
                                 </div>
                             </form>
+                            {% endif %}
                         </div>
                     </div>
                 </div>

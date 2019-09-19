@@ -1,0 +1,19 @@
+{% extends 'myblog/header.html' %}
+{% load static %}
+{% block main %}
+	{% if sent %}
+	<h3> E-Mail Successfully Sent</h3>
+	<p>
+		"{{ post.title }}" was successfully sent to {{ form.cleaned_data.to }}.
+	</p>
+	{% else %}
+	<div class="add-comment mb-5" style="text-align: center;">
+		<center><h5 class="mt-5 mb-5">Share "{{ post.title }}" by e-mail</h5></center>
+		<form action="." method="POST" class="commenting-form">
+			{{ form.as_p }}
+			{% csrf_token %}
+			<input type="submit" value="Send E-Mail">
+		</form>
+	</div>
+		{% endif %}
+{% endblock %}
