@@ -45,6 +45,7 @@ INSTALLED_APPS = [
     'myblog',
     'django.contrib.sites',
     'django.contrib.sitemaps',
+    'django.contrib.postgres',
 ]
 
 MIDDLEWARE = [
@@ -137,3 +138,6 @@ EMAIL_HOST_USER = 'talk2manoz@gmail.com'
 EMAIL_HOST_PASSWORD = 'Imaginew0rld'
 EMAIL_PORT = '587'
 EMAIL_USE_TLS = 'True'
+
+MEDIA_URL = '/media/'
+MEDIA_ROOT = os.path.join(BASE_DIR, 'myblog/media')
